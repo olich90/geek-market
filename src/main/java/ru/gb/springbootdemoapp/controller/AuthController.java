@@ -33,7 +33,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@RequestParam String username, @RequestParam String password, @RequestParam String repeatPassword, Model model) {
+    public String register(@RequestParam String username, @RequestParam String password, @RequestParam String passwordConfirm, Model model) {
         String regex = "^(.+)@(.+)$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(username);
@@ -41,13 +41,13 @@ public class AuthController {
             model.addAttribute(ERROR, INVALID_EMAIL);
             return "register";
         }
-        if (!password.equals(repeatPassword)) {
+        if (!password.equals(passwordConfirm)) {
             model.addAttribute(ERROR, MISMATCH_PASSWORD);
             return "register";
         }
         try {
             userService.sighUp(username, password);
-        } catch (Exception e) {
+        } catch (IllegalStateException e) {
             model.addAttribute(ERROR, e.getMessage());
             return "register";
         }
@@ -55,12 +55,13 @@ public class AuthController {
     }
 
     @GetMapping("/register/confirm")
-    public String registerConfirm(@RequestParam String token) {
-        // TODO токен истек - что делать
-        if (userService.confirmRegistration(token)) {
+    public String registerConfirm(@RequestParam String token, Model model) {
+        try {
+            userService.confirmRegistration(token);
             return "register-complete";
+        } catch (IllegalStateException e) {
+            model.addAttribute(ERROR, e.getMessage());
+            return "register-error";
         }
-        // TODO что-то выдавать разумное
-        return "redirect:/";
     }
 }

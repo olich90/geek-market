@@ -76,7 +76,7 @@ public class UserService implements UserDetailsService {
   public boolean confirmRegistration(String token) {
     var user = registrationTokenRepository.findUserByToken(LocalDateTime.now(), token);
     if (user.isEmpty()) {
-      return false;
+      throw new IllegalStateException("Ссылка для подтверждения регистрации устарела...");
     }
     user.ifPresent(u -> u.setEnabled(true));
     return true;

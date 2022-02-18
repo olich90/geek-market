@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:with="currentPage='Ошибка при подтверждении регистрации'">
+<head th:include="fragments/common-head">
+</head>
+<body>
+<nav th:replace="fragments/nav-bar::nav-bar">
+</nav>
+<div class="container">
+  <div class="row justify-content-center">
+    <p th:text="${error}"></p>
+  </div>
+</div>
+</body>
+</html>
