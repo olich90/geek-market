@@ -39,17 +39,17 @@ public class AuthController {
         Matcher matcher = pattern.matcher(username);
         if (!matcher.matches()) {
             model.addAttribute(ERROR, INVALID_EMAIL);
-            return "register-error";
+            return "register";
         }
         if (!password.equals(repeatPassword)) {
             model.addAttribute(ERROR, MISMATCH_PASSWORD);
-            return "register-error";
+            return "register";
         }
         try {
             userService.sighUp(username, password);
         } catch (Exception e) {
             model.addAttribute(ERROR, e.getMessage());
-            return "register-error";
+            return "register";
         }
         return "register-confirm";
     }

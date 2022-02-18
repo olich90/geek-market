@@ -21,6 +21,7 @@
                 <label for="repeatPassword" class="form-label">Повторите пароль</label>
                 <input type="password" class="form-control" id="repeatPassword" name="repeatPassword">
             </div>
+            <div th:if="${error}" th:text="${error}" class="alert alert-danger"></div>
             <a th:href="@{'/login'}" class="btn btn-secondary">Войти</a>
             <button type="submit" class="btn btn-primary">Регистрация</button>
         </form>
