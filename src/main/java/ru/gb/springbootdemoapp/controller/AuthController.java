@@ -5,7 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.gb.springbootdemoapp.service.UserService;
+import ru.gb.springbootdemoapp.service.RegisterService;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,13 +13,13 @@ import java.util.regex.Pattern;
 @Controller
 public class AuthController {
 
-    private final UserService userService;
+    private final RegisterService registerService;
     private final String ERROR = "error";
     private final String MISMATCH_PASSWORD = "Введённые пароли не совпадают!";
     private final String INVALID_EMAIL = "Введён некорректный email!";
 
-    public AuthController(UserService userService) {
-        this.userService = userService;
+    public AuthController(RegisterService registerService) {
+        this.registerService = registerService;
     }
 
     @GetMapping("/login")
@@ -46,7 +46,7 @@ public class AuthController {
             return "register";
         }
         try {
-            userService.sighUp(username, password);
+            registerService.sighUp(username, password);
         } catch (IllegalStateException e) {
             model.addAttribute(ERROR, e.getMessage());
             return "register";
@@ -57,7 +57,7 @@ public class AuthController {
     @GetMapping("/register/confirm")
     public String registerConfirm(@RequestParam String token, Model model) {
         try {
-            userService.confirmRegistration(token);
+            registerService.confirmRegistration(token);
             return "register-complete";
         } catch (IllegalStateException e) {
             model.addAttribute(ERROR, e.getMessage());
