@@ -52,24 +52,29 @@ public class UserService implements UserDetailsService {
 
   // TODO Рефактор: вынести sighUp и confirmRegistration RegisterService
   @Transactional
-  public String sighUp(String email, String password) {
-    boolean userExist = userRepository.findByEmail(email).isPresent();
-    if (userExist) {
-      throw new IllegalStateException("Пользователь уже существует");
+  public void sighUp(String email, String password) {
+    ru.gb.springbootdemoapp.model.User user = userRepository.findByEmail(email).orElse(null);
+    if (user != null) {
+      if (user.getEnabled()){
+        throw new IllegalStateException("Пользователь уже существует");
+      }
+      createAndSendToken(user, email);
+      return;
     }
-    var user = new ru.gb.springbootdemoapp.model.User();
-    user.setEmail(email);
-    user.setPassword(bCryptPasswordEncoder.encode(password));
-    user.setEnabled(false);
-    user.setAuthorities(Set.of(authorityRepository.findByName("ROLE_USER")));
-    userRepository.save(user);
+    var newUser = new ru.gb.springbootdemoapp.model.User();
+    newUser.setEmail(email);
+    newUser.setPassword(bCryptPasswordEncoder.encode(password));
+    newUser.setEnabled(false);
+    newUser.setAuthorities(Set.of(authorityRepository.findByName("ROLE_USER")));
+    userRepository.save(newUser);
 
+    createAndSendToken(newUser, email);
+  }
+
+  private void createAndSendToken (ru.gb.springbootdemoapp.model.User user, String email) {
     String tokenUid = UUID.randomUUID().toString();
-    registrationTokenRepository.save(new RegistrationToken(tokenUid, LocalDateTime.now().plusMinutes(15), user));
-
+    registrationTokenRepository.save(new RegistrationToken(tokenUid, LocalDateTime.now().plusMinutes(1), user));
     emailService.sendVarificationLink(email, tokenUid);
-
-    return tokenUid;
   }
 
   @Transactional
