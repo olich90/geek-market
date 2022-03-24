@@ -16,6 +16,9 @@
                 <li sec:authorize="hasRole('ADMIN')" class="nav-item">
                     <a class="nav-link" th:href="@{'/admin'}">Администрирование</a>
                 </li>
+                <li sec:authorize="hasRole('ADMIN')" class="nav-item">
+                    <a class="nav-link" th:href="@{'/order/list'}">Управление заказами</a>
+                </li>
             </ul>
         </div>
 

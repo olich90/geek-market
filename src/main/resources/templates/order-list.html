@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:with="currentPage='Список заказов'">
+<head th:include="fragments/common-head">
+</head>
+<body>
+<nav th:replace="fragments/nav-bar::nav-bar">
+</nav>
+<div class="container">
+    <h1 th:text="#{title.product.order}">Список заказов</h1>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td>Статус</td>
+            <td>Адрес</td>
+            <td>Email</td>
+            <td>Способ доставки</td>
+            <td>Цена</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orders}">
+            <td>
+                <select>
+                    <option th:each="status: ${statuses}"
+                            th:value="${order.getOrderStatus()}"
+                            th:text="${status}"/>
+                </select>
+                <form method="post" th:action="@{${'/order/update/' + order.getId()}}">
+                    <button type="submit">Сохранить</button>
+                </form>
+            </td>
+            <td th:text="${order.getAddress()}">Красная 1</td>
+            <td th:text="${order.getContactEmail()}">user@user.ru</td>
+            <td th:text="${order.shippingMethod}">Delivery</td>
+            <td th:text="${order.getPrice()}">100</td>
+        </tr>
+        </tbody>
+    </table>
+
+
+</div>
+</body>
+</html>
+

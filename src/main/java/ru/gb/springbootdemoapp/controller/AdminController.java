@@ -33,16 +33,16 @@ public class AdminController {
   }
 
   @GetMapping
-  public String getAllStudents(Model model) {
-    List<ProductDto> students =  productService.getAll().stream()
+  public String getAllProducts(Model model) {
+    List<ProductDto> products =  productService.getAll().stream()
         .map(productMapper::productToProductDto).collect(Collectors.toList());
-    model.addAttribute("products", students);
+    model.addAttribute("products", products);
     return "admin/index";
   }
 
 
   @GetMapping("/add")
-  public String getStudentAddFrom(Model model) {
+  public String getProductAddFrom(Model model) {
     model.addAttribute("productShortDto", new ProductShortDto());
     model.addAttribute("categories", categoryService.getAllTitles());
     return "admin/add_product_form";
@@ -50,7 +50,7 @@ public class AdminController {
 
   @PostMapping("/add")
   @Transactional
-  public String saveStudent(@Valid ProductShortDto productShortDto, BindingResult bindingResult, Model model) {
+  public String saveProduct(@Valid ProductShortDto productShortDto, BindingResult bindingResult, Model model) {
     if (bindingResult.hasErrors()) {
       return "admin/add_product_form";
     }
@@ -64,7 +64,7 @@ public class AdminController {
   }
 
   @PostMapping("/delete/{id}")
-  public String saveStudent(@PathVariable Long id) {
+  public String deleteProduct(@PathVariable Long id) {
     productService.deleteById(id);
     return "redirect:/admin";
   }
