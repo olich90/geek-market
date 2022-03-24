@@ -67,4 +67,13 @@ public class OrderService {
     cartService.init();
     return order;
   }
+
+  public List<Order> getAll() {
+    return orderRepository.findAll();
+  }
+
+  public void updateOrderStatus(Long id){
+    orderRepository.updateOrderStatus(id);
+  }
+
 }
